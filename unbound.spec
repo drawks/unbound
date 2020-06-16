@@ -328,7 +328,7 @@ exit 0
 /sbin/ldconfig
 # If update contains new keys not already in database, use package keys
 if [ "$1" -eq 2 -a -f %{_sharedstatedir}/unbound/root.key.rpmnew ]; then
-        /sbin/runuser --command="
+        runuser --command="
 	cp -pf %{_sharedstatedir}/unbound/root.key %{_sharedstatedir}/unbound/root.key.rpmupdate && \
 	sed -e 's/;.*//' -e '/^[[:space:]]*$/ d' %{_sharedstatedir}/unbound/root.key.rpmnew | while read KEY;
 	do
@@ -338,7 +338,7 @@ if [ "$1" -eq 2 -a -f %{_sharedstatedir}/unbound/root.key.rpmnew ]; then
 	done && \
 	mv %{_sharedstatedir}/unbound/root.key.rpmupdate %{_sharedstatedir}/unbound/root.key" --shell /bin/sh unbound || :
 fi
-%{_sbindir}/runuser  --command="%{_sbindir}/unbound-anchor -a %{_sharedstatedir}/unbound/root.key -c %{_sysconfdir}/unbound/icannbundle.pem"  --shell /bin/sh unbound ||:
+runuser  --command="%{_sbindir}/unbound-anchor -a %{_sharedstatedir}/unbound/root.key -c %{_sysconfdir}/unbound/icannbundle.pem"  --shell /bin/sh unbound ||:
 %if %{with systemd}
 %systemd_post unbound-anchor.timer
 # the Unit is in presets, but would be started afte reboot
