@@ -110,22 +110,20 @@ The devel package contains the unbound library and the include files
 Summary: Libraries used by the unbound server and client applications
 Group: Applications/System
 Requires(post): /sbin/ldconfig
-Requires(post): systemd
 Requires(post): grep
-Requires(post): sed
 Requires(post): util-linux
-Requires(preun): systemd
+Requires(post): sed
 Requires(postun): /sbin/ldconfig
-Requires(postun): systemd
 Requires: openssl >= 0.9.8g-12
+%if %{with systemd}
+Requires(preun): systemd
+Requires(postun): systemd
+Requires(post): systemd
+%else
+Requires: initscripts >= 8.36
+Requires(post): chkconfig
+%endif
 
-# needed to make sure the redhat-release-xxx contains the presets file
-# which enables unbound-anchor.timer.
-# See https://bugzilla.redhat.com/show_bug.cgi?id=1215645#c5
-Conflicts: redhat-release-server < 7.2-7
-Conflicts: redhat-release-workstation < 7.2-5
-Conflicts: redhat-release-computenode < 7.2-5
-Conflicts: redhat-release-client < 7.2-4
 
 %description libs
 Contains libraries used by the unbound server and client applications
