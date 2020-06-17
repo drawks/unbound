@@ -178,7 +178,14 @@ install -p -m 0644 %{SOURCE19} %{buildroot}%{_initddir}/unbound
 install -p -m 0600 %{SOURCE18} %{buildroot}%{_sysconfdir}/cron.d/unbound-anchor
 %endif
 
+%if %{with systemd}
 install -p -m 0755 %{SOURCE2} %{buildroot}%{_sysconfdir}/unbound
+%else
+install -p -m 0755 %{SOURCE2} %{buildroot}%{_sysconfdir}/unbound
+# disable `ip-transparent` on cento-6 because the standard `named_t` selinux policy doesn't allow it
+%__sed -i -e 's/ip-transparent: yes/#ip-transparent: no/' %{buildroot}%{_sysconfdir}/unbound/unbound.conf
+%endif
+
 install -p -m 0644 %{SOURCE12} %{buildroot}%{_sysconfdir}/unbound
 install -p -m 0644 %{SOURCE14} %{buildroot}%{_sysconfdir}/sysconfig/unbound
 install -p -m 0644 %{SOURCE16} .
